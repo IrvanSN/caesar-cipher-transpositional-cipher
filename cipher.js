@@ -25,6 +25,32 @@ var alphabets = [
   "X", // nilai: 23
   "Y", // nilai: 24
   "Z", // nilai: 25
+  "a", // nilai: 26
+  "b", // nilai: 27
+  "c", // nilai: 28
+  "d", // nilai: 29
+  "e", // nilai: 30
+  "f", // nilai: 31
+  "g", // nilai: 32
+  "h", // nilai: 33
+  "i", // nilai: 34
+  "j", // nilai: 35
+  "k", // nilai: 36
+  "l", // nilai: 37
+  "m", // nilai: 38
+  "n", // nilai: 39
+  "o", // nilai: 40
+  "p", // nilai: 41
+  "q", // nilai: 42
+  "r", // nilai: 43
+  "s", // nilai: 44
+  "t", // nilai: 45
+  "u", // nilai: 46
+  "v", // nilai: 47
+  "w", // nilai: 48
+  "x", // nilai: 49
+  "y", // nilai: 50
+  "z", // nilai: 51
 ];
 
 const transposeArray = (type, arr) => {
@@ -50,21 +76,21 @@ const transposeArray = (type, arr) => {
 // Fungsi untuk mengacak alfabet
 const cipherSubAlphabet = (type, pt, k) => {
   if (type === "encrypt") {
-    // Jika tipe encrypt maka hitung dengan rumus (pt + k) % 26
+    // Jika tipe encrypt maka hitung dengan rumus (pt + k) % 52
     // pt adalah Integer yang sebelumnya di translasikan dari Alphabet ke Integer
-    const index = (pt + k) % 26;
+    const index = (pt + k) % 52;
     // Kembalikan index dari alphabets sesuai hasil perhitungan di atas
     return alphabets[index];
   }
 
   if (type === "decrypt") {
-    // Jika tipe decrypt maka hitung dengan rumus (pt - k) % 26
+    // Jika tipe decrypt maka hitung dengan rumus (pt - k) % 52
     // Fungsi dibawah ini digunakan jika hasil perhitungan minus
     const findPositiveInt = (num) => {
-      const subt = (num - k) % 26;
-      // Jika minus maka di tambahkan 26
+      const subt = (num - k) % 52;
+      // Jika minus maka di tambahkan 52
       if (subt < 0) {
-        const plus = subt + 26;
+        const plus = subt + 52;
         return plus;
       }
       return subt;
@@ -77,12 +103,12 @@ const cipherSubAlphabet = (type, pt, k) => {
 };
 
 const encrypt = (plainText, key) => {
-  console.log("===== Encrypt Text =====");
+  console.log("\n===== Encrypt Text =====");
   // Mengubah String ke dalam pecahan Array
-  const textToArray = plainText.toUpperCase().split("");
+  const textToArray = plainText.split("");
   console.log("textToArray", textToArray);
 
-  // Mentranslasikan String dalam Array ke huruf sesuai nilai/value di atas
+  // Mentranslasikan String dalam Array ke angka sesuai nilai/value di atas
   const translateValue = textToArray.map((item) => alphabets.indexOf(item));
   console.log("translateValue", translateValue);
 
@@ -129,9 +155,9 @@ const encrypt = (plainText, key) => {
 };
 
 const decrypt = (cipherText, key) => {
-  console.log("===== Decrypt Text =====");
+  console.log("\n===== Decrypt Text =====");
   // Decrypt dari cipher text, ubah String ke dalam pecahan Array
-  const textToArray = cipherText.toUpperCase().split("");
+  const textToArray = cipherText.split("");
   console.log("textToArray", textToArray);
 
   // Mengubah ke Array 2 dimensi
@@ -174,9 +200,38 @@ const decrypt = (cipherText, key) => {
   return cipherArray.join("");
 };
 
-const key = 2;
-const cipher = encrypt("loves", key);
+const main = () => {
+  const args = process.argv.slice(2, process.argv.length);
 
-console.log("cipherText:", cipher);
+  if (args[0] === "help") {
+    console.log(
+      "Call format: node cipher.js {encrypt/decrypt} {plain text/cipher text} {key}"
+    );
+    console.log("Batasan: value dari key WAJIB <= panjang plain text");
+    console.log("Batasan: plainText tidak boleh ada spasi");
+    return true;
+  }
 
-console.log("decrypted:", decrypt(cipher, key));
+  const text = args[1].toString();
+  const key = parseInt(args[2]);
+
+  if (key > text.length) {
+    console.log(`value dari key > panjang plain text`);
+    console.log(`suggestion: gunakan key 1 - ${text.length}`);
+    return true;
+  }
+
+  if (args[0] === "encrypt") {
+    const cipherText = encrypt(text, key);
+    console.log("\nHasil Enkripsi:", cipherText);
+    console.log("");
+  }
+
+  if (args[0] === "decrypt") {
+    const decryptedCipher = decrypt(text, key);
+    console.log("\nHasil Dekripsi:", decryptedCipher);
+    console.log("");
+  }
+};
+
+main();
